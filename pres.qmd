@@ -40,7 +40,7 @@ p_dls <- readRDS("../../data/p_dls.rds") |>
     - ... to all levels of society
     - ... at all stages of research
     - See also @Kitchin2014
-- *Reproducibility*, *replicability*, and [reusability]{.orange}
+- *Reproducibility*, *replicability* [@Dreber2024], and [reusability]{.orange}
 
 :::
 
