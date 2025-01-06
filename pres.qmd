@@ -1,0 +1,329 @@
+---
+title: "[Open science and reusability in political science]{.titlechill}"
+author: 
+  - name: "Martin Søyland"
+    affiliation: "<martin.soyland@stv.uio.no></br>University of Oslo"
+format: 
+  revealjs:
+    embed-resources: true
+    transition: zoom
+    transition-speed: slow
+    incremental: true
+    theme: [serif, style.scss]
+    mermaid:
+      theme:
+        neutral
+cite-method: citeproc
+bibliography: ../../refs.bib
+engine: knitr
+---
+
+```{r}
+#| label: setup
+#| echo: false
+#| eval: true
+library(tidyverse)
+
+p_dls <- readRDS("../../data/p_dls.rds") |>
+  mutate(count = paste0("~ ", round(count / 1000, digits = 0), "k"))
+
+```
+
+
+# Open science { .smaller }
+
+:::: {.columns}
+
+::: {.column}
+
+- Open access to research ([UNESCO](https://unesdoc.unesco.org/ark:/48223/pf0000383323)) ...
+    - ... to all levels of society
+    - ... at all stages of research
+    - See also @Kitchin2014
+- *Reproducibility*, *replicability*, and [reusability]{.orange}
+
+:::
+
+::: {.column}
+
+![](unesco_os2.png){width=75%}
+
+:::
+
+::::
+
+
+## Reproducibility
+
+</br> </br>
+
+```{mermaid}
+
+flowchart LR
+    
+    REPROD[Reproducibility]
+    
+    REPROD --- COMP{{Computational}}
+    REPROD --- REC{{Recreate}}
+    REPROD --- ROB{{Robust}}
+    
+    COMP --> COMPDESC("Original code 
+                       and data")
+                       
+    REC ---> REC1("Access to original 
+                  data, but not code")
+    REC --> REC2("Access to original 
+                  code, but not data")
+    REC ---> REC3("Access to neither
+                  code nor data")
+
+    ROB --> ROBDESC("Alternative
+                     analytical tools")
+                     
+classDef level1 font-size:32pt, font-weight: bold
+classDef level2 font-size:28pt, font-weight: bold
+classDef level3 font-size:20pt
+
+class REPROD level2
+
+class DIR level2
+class CONC level2
+class DES level2
+class EME level2
+class COMP level2
+class REC level2
+class ROB level2
+
+class COMPDESC level3
+class REC1 level3
+class REC2 level3
+class REC3 level3
+class ROBDESC level3
+
+```
+
+
+## Replicability
+
+</br> 
+
+```{mermaid}
+
+flowchart LR
+
+  REPLI[Replication]
+  REPLI --- DIR{{Direct}}
+  REPLI --- CONC{{Conceptual}}
+    
+                       
+  DIR --> DIR1("Same design/analysis, 
+                  but new data and
+                  same population")
+  DIR ---> DIR2("Same design/analysis, 
+                  but new data and
+                  similar population")
+  DIR --> DIR3("Same design/analysis, 
+                  but new data and
+                  different population")
+    
+  CONC ---> CONC1("Different design/analysis, 
+                    new data and
+                    same population")
+  CONC --> CONC2("Different design/analysis, 
+                    new data and
+                    similar population")
+  CONC ---> CONC3("Different design/analysis,
+                    new data and
+                    different population")
+
+classDef level1 font-size:32pt, font-weight: bold
+classDef level2 font-size:28pt, font-weight: bold
+classDef level3 font-size:18pt
+
+class REPLI level1
+
+class DIR level2
+class CONC level2
+
+class CONC1 level3
+class CONC2 level3
+class CONC3 level3
+
+class DIR1 level3
+class DIR2 level3
+class DIR3 level3
+
+    
+```
+
+## Reusability { .smaller }
+
+> Reusability is the degree to which research can be used outside the scope of the original research’s purpose entirely [@Thanos2017]
+
+
+:::: {.columns}
+
+::: {.column .fragment}
+
+- [By design]{.midgreen}
+    - Data generated with the main purpose of being reused
+    - ANES, V-Dem, PAIRDEM, data papers etc
+
+:::
+
+::: {.column .fragment}
+
+- [Emergent]{.blue}
+    - Data reused as a byproduct of concientious data gathering
+    - Replication material, shared data, etc
+
+:::
+
+::::
+
+
+## Why reusability? { .smaller }
+
+:::: {.columns}
+
+::: {.column}
+
+![](dg_gif2.gif)
+
+:::
+
+::: {.column}
+
+1. Resource efficiency
+    - Replication material often does not live up to expectations
+    - Gather from scratch or give up?
+2. Data validity
+    - More reuse, more validation of data
+3. Provide snapshots of history
+    - Data change over time
+    - Interpretation change over time
+
+:::
+
+::::
+
+
+## 5 principles of reusability
+
+</br></br>
+
+1. `r emo::ji("thinking")` Data [inclusion]{.red}, despite irrelevance or missing parts
+2. `r emo::ji("memo")` [Documentation]{.orange} of data gathering
+3. `r emo::ji("deciduous_tree")` [Disaggregation]{.midgreen} of the units of analysis
+4. `r emo::ji("symbols")` Retain [raw data]{.blue} copies
+5. `r emo::ji("handshake")` Consider data [merging potential]{.purple}
+
+# Case: Reusability with dynamic data sources { .smaller }
+
+:::: {.columns}
+
+::: {.column}
+
+- Dynamic data is data that can be reproduced, appended, mended, and extended
+- Scraping or crawling
+- Front-end or back-end
+- Data packages
+
+:::
+
+::: {.column .fragment .center}
+
+![](stortingscrape.png){width=50%}
+
+:::
+
+::::
+
+
+
+## Examples of data packages for `R` { .smaller }
+
+::: {#tbl-dynamicsoftware tbl-colwidths="[15,30,35,15,10]"}
+
+| **Dataset**     | **Reference**    | **Scope**                     | **Downloads**                                         | **Citations** |
+|:----------------|:-----------------|:------------------------------|:-----------------------------------------------------:|:-------------:|
+| congress        | @Kenny2024       | Library of Congress API       | `r p_dls$count[which(p_dls$package == "congress")]`   | --            | 
+| essurvey        | @Cimentada2019   | European Social Survey rounds | `r p_dls$count[which(p_dls$package == "essurvey")]`   | 8             |
+| eurlex          | @Ovadek2021      | European Union laws           | `r p_dls$count[which(p_dls$package == "eurlex")]`     | 17            |
+| hansard         | @Odell2017       | UK Parliament API             | `r p_dls$count[which(p_dls$package == "hansard")]`    | 7             |
+| manifestoR      | @Lewandowski2020 | Manifesto Project data        | `r p_dls$count[which(p_dls$package == "manifestoR")]` | 13            |
+| wbstats         | @Piburn2020      | World Bank API                | `r p_dls$count[which(p_dls$package == "wbstats")]`    | 22            | 
+| WDI             | @ArelBundock2022 | World Development Indicators  | `r p_dls$count[which(p_dls$package == "WDI")]`        | 49            |
+
+:::
+
+## Applied examples: `stortingscrape` { .smaller }
+
+:::: {.columns}
+
+::: {.column}
+
+![](reppropscrape.png){width=50%}
+
+:::
+
+::: {.column}
+
+![](helpfile.png)
+
+:::
+
+::::
+
+
+## Two examples -- Private Member Bills
+
+> H1: Opposition MPs use representative proposals strategically to set the agenda for upcoming elections
+
+. . .
+
+> H2: MPs use PMBs more for inter-party cooperation under minority governments than majority governments
+
+
+## Topics and Elections { .smaller }
+
+![](exptops.png)
+
+## Co-operation and Government Types { .smaller data-background=coopscrape.png data-background-size=60% data-background-position=bottom}
+
+<!-- ![](coopscrape.png){.fragment width=100%} -->
+
+## Co-operation and Government Types { .smaller }
+
+::: {.r-stack .fragment}
+
+![2005-2009](sim1.png){.fragment .fade-in-then-out}
+
+![2009-2013](sim2.png){.fragment .fade-in-then-out}
+
+![2013-2017](sim3.png){.fragment .fade-in-then-out}
+
+:::
+
+
+
+# Conclusion { .smaller }
+
+- Open science
+    - Reproducibility and replicability
+    - [Reusability]{.orange}
+- 5 principles of reusability
+    1. data inclusion
+    2. documentation
+    3. disaggregation
+    4. retain raw data
+    5. consider merging potential
+- `stortingscrape`
+    - dynamic data and reusability
+    - PMBs -- topics and elections
+    - PMBs -- Co-operation and government types
+
+# References
+
+::: {#refs}
+:::
